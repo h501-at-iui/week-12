@@ -123,7 +123,6 @@ def play_recursive_game():
     Returns:
         np.array: The final, stable board configuration.
     """
-    # Initialize the random 10x10 board
     initial_board = np.random.randint(2, size=(10, 10))
     
     # Start the recursive process
