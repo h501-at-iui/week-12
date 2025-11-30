@@ -18,8 +18,6 @@ def update_board(board):
     """
     
     # Create a new board to store the next state.
-    # We can't modify the original board in-place, as changes
-    # would affect the neighbor counts for subsequent cells.
     new_board = np.zeros_like(board)
     
     rows, cols = board.shape
@@ -29,23 +27,21 @@ def update_board(board):
         for j in range(cols):
             
             # --- Count live neighbors ---
-            # This implementation uses a "toroidal" or "wrapping"
-            # boundary, where the top/bottom and left/right
-            # edges are connected.
-            
             live_neighbors = 0
+            
             # Iterate over the 3x3 grid centered at (i, j)
             for x in range(i - 1, i + 2):
                 for y in range(j - 1, j + 2):
+                    
                     # Don't count the cell itself
                     if x == i and y == j:
                         continue
                     
-                    # Use the modulo operator (%) to wrap around the edges
-                    neighbor_row = x % rows
-                    neighbor_col = y % cols
-                    
-                    live_neighbors += board[neighbor_row, neighbor_col]
+                    # FIX: STRICT BOUNDARY CHECK
+                    # Instead of wrapping with %, we check if the neighbor 
+                    # is actually inside the grid dimensions.
+                    if 0 <= x < rows and 0 <= y < cols:
+                        live_neighbors += board[x, y]
 
             # --- Apply Conway's Rules ---
             current_cell_state = board[i, j]
@@ -62,9 +58,8 @@ def update_board(board):
             elif current_cell_state == 0 and live_neighbors == 3:
                 new_board[i, j] = 1
                 
-            # All other dead cells stay dead (which is the default 
-            # value of new_board, so no 'else' is needed)
-
+            # All other dead cells stay dead
+            
     return new_board
 
 
